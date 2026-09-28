@@ -1,7 +1,8 @@
 // Tiếng Anh 1 – Global Success (16 Units)
 // Đối chiếu với Sách giáo viên Tiếng Anh 1 Global Success (NXB Giáo dục Việt Nam).
-// Mỗi từ: en (tiếng Anh), ipa (phiên âm Anh–Anh, theo từ điển Cambridge/Oxford), vi (nghĩa), emoji (hình minh họa).
-//   Có thể thêm `img: 'assets/g1/ball.png'` hoặc `audio: 'assets/g1/ball.mp3'` để dùng ảnh / file nghe thật.
+// Mỗi từ: en (tiếng Anh), ipa (phiên âm Anh–Mỹ, theo từ điển Cambridge bản US), vi (nghĩa), emoji (hình minh họa).
+//   App đọc từ và câu bằng giọng máy Anh–Mỹ (en-US). Có thể thêm `audio: 'audio/g1/ball.mp3'` để dùng file ghi âm.
+//   Có thể thêm `img: 'assets/g1/ball.png'` để dùng ảnh minh họa thật thay emoji.
 // patterns:  mẫu câu chính của Unit (Lesson 3 – "Listen and repeat" / "Let's talk").
 // sentences: câu trong bài chant (Lesson 2 – "Listen and chant").
 // Thẻ từ chỉ hiện những câu có chứa đúng từ đang học.
@@ -10,7 +11,7 @@ window.GRADE_DATA[1] = {
   units: [
     { id: 1, letter: 'B', title: 'In the school playground', vi: 'Ở sân trường',
       words: [
-        { en: 'ball', ipa: 'bɔːl', vi: 'quả bóng', emoji: '🏐' },
+        { en: 'ball', ipa: 'bɑːl', vi: 'quả bóng', emoji: '🏐' },
         { en: 'bike', ipa: 'baɪk', vi: 'xe đạp', emoji: '🚲' },
         { en: 'book', ipa: 'bʊk', vi: 'quyển sách', emoji: '📘' },
       ],
@@ -18,7 +19,7 @@ window.GRADE_DATA[1] = {
     { id: 2, letter: 'C', title: 'In the dining room', vi: 'Trong phòng ăn',
       words: [
         { en: 'cake', ipa: 'keɪk', vi: 'bánh ngọt', emoji: '🎂' },
-        { en: 'car', ipa: 'kɑː', vi: 'ô tô', emoji: '🚗' },
+        { en: 'car', ipa: 'kɑːr', vi: 'ô tô', emoji: '🚗' },
         { en: 'cat', ipa: 'kæt', vi: 'con mèo', emoji: '🐱' },
         { en: 'cup', ipa: 'kʌp', vi: 'cái cốc', emoji: '☕' },
       ],
@@ -26,7 +27,7 @@ window.GRADE_DATA[1] = {
       sentences: ['A cat and a car.', 'A cup and a cake.'] },
     { id: 3, letter: 'A', title: 'At the street market', vi: 'Ở chợ',
       words: [
-        { en: 'apple', ipa: 'ˈæpl', vi: 'quả táo', emoji: '🍎' },
+        { en: 'apple', ipa: 'ˈæpəl', vi: 'quả táo', emoji: '🍎' },
         { en: 'bag', ipa: 'bæɡ', vi: 'cái túi', emoji: '👜' },
         { en: 'can', ipa: 'kæn', vi: 'cái lon', emoji: '🥫' },
         { en: 'hat', ipa: 'hæt', vi: 'cái mũ', emoji: '👒' },
@@ -36,8 +37,8 @@ window.GRADE_DATA[1] = {
     { id: 4, letter: 'D', title: 'In the bedroom', vi: 'Trong phòng ngủ',
       words: [
         { en: 'desk', ipa: 'desk', vi: 'bàn học', emoji: '📝' },
-        { en: 'dog', ipa: 'dɒɡ', vi: 'con chó', emoji: '🐶' },
-        { en: 'door', ipa: 'dɔː', vi: 'cửa ra vào', emoji: '🚪' },
+        { en: 'dog', ipa: 'dɑːɡ', vi: 'con chó', emoji: '🐶' },
+        { en: 'door', ipa: 'dɔːr', vi: 'cửa ra vào', emoji: '🚪' },
         { en: 'duck', ipa: 'dʌk', vi: 'con vịt', emoji: '🦆' },
       ],
       patterns: ['This is a dog.'] },
@@ -53,42 +54,42 @@ window.GRADE_DATA[1] = {
       words: [
         { en: 'bell', ipa: 'bel', vi: 'cái chuông', emoji: '🔔' },
         { en: 'pen', ipa: 'pen', vi: 'bút mực', emoji: '🖊️' },
-        { en: 'pencil', ipa: 'ˈpensl', vi: 'bút chì', emoji: '✏️' },
+        { en: 'pencil', ipa: 'ˈpensəl', vi: 'bút chì', emoji: '✏️' },
         { en: 'red', ipa: 'red', vi: 'màu đỏ', emoji: '🔴' },
       ],
       patterns: ["It's a red pen."],
       sentences: ['A red pen.', 'A red pencil.'] },
     { id: 7, letter: 'G', title: 'In the garden', vi: 'Trong vườn',
       words: [
-        { en: 'garden', ipa: 'ˈɡɑːdn', vi: 'khu vườn', emoji: '🌷' },
+        { en: 'garden', ipa: 'ˈɡɑːrdən', vi: 'khu vườn', emoji: '🌷' },
         { en: 'gate', ipa: 'ɡeɪt', vi: 'cái cổng', emoji: '🚧' },
-        { en: 'girl', ipa: 'ɡɜːl', vi: 'bạn gái', emoji: '👧' },
-        { en: 'goat', ipa: 'ɡəʊt', vi: 'con dê', emoji: '🐐' },
+        { en: 'girl', ipa: 'ɡɝːl', vi: 'bạn gái', emoji: '👧' },
+        { en: 'goat', ipa: 'ɡoʊt', vi: 'con dê', emoji: '🐐' },
       ],
       patterns: ['There is a garden.'],
       sentences: ['A goat and a gate.', 'A goat and a garden.'] },
     { id: 8, letter: 'H', title: 'In the park', vi: 'Trong công viên',
       words: [
-        { en: 'hair', ipa: 'heə', vi: 'mái tóc', emoji: '💇' },
+        { en: 'hair', ipa: 'her', vi: 'mái tóc', emoji: '💇' },
         { en: 'hand', ipa: 'hænd', vi: 'bàn tay', emoji: '✋' },
         { en: 'head', ipa: 'hed', vi: 'cái đầu', emoji: '👦' },
-        { en: 'horse', ipa: 'hɔːs', vi: 'con ngựa', emoji: '🐴' },
+        { en: 'horse', ipa: 'hɔːrs', vi: 'con ngựa', emoji: '🐴' },
       ],
       patterns: ['Touch your hair.'] },
     { id: 9, letter: 'O', title: 'In the shop', vi: 'Trong cửa hàng',
       words: [
-        { en: 'clocks', ipa: 'klɒks', vi: 'những cái đồng hồ', emoji: '⏰' },
-        { en: 'locks', ipa: 'lɒks', vi: 'những cái ổ khóa', emoji: '🔒' },
-        { en: 'mops', ipa: 'mɒps', vi: 'những cây lau nhà', emoji: '🧹' },
-        { en: 'pots', ipa: 'pɒts', vi: 'những cái nồi', emoji: '🍲' },
+        { en: 'clocks', ipa: 'klɑːks', vi: 'những cái đồng hồ', emoji: '⏰' },
+        { en: 'locks', ipa: 'lɑːks', vi: 'những cái ổ khóa', emoji: '🔒' },
+        { en: 'mops', ipa: 'mɑːps', vi: 'những cây lau nhà', emoji: '🧹' },
+        { en: 'pots', ipa: 'pɑːts', vi: 'những cái nồi', emoji: '🍲' },
       ],
       patterns: ['How many clocks? – Two.'],
       sentences: ['There are two locks.', 'There are three clocks.', 'There are four mops.', 'There are five pots.'] },
     { id: 10, letter: 'M', title: 'At the zoo', vi: 'Ở sở thú',
       words: [
-        { en: 'mango', ipa: 'ˈmæŋɡəʊ', vi: 'quả xoài', emoji: '🥭' },
+        { en: 'mango', ipa: 'ˈmæŋɡoʊ', vi: 'quả xoài', emoji: '🥭' },
         { en: 'monkey', ipa: 'ˈmʌŋki', vi: 'con khỉ', emoji: '🐵' },
-        { en: 'mother', ipa: 'ˈmʌðə', vi: 'mẹ', emoji: '👩' },
+        { en: 'mother', ipa: 'ˈmʌðɚ', vi: 'mẹ', emoji: '👩' },
         { en: 'mouse', ipa: 'maʊs', vi: 'con chuột', emoji: '🐭' },
       ],
       patterns: ["That's a monkey."] },
@@ -111,35 +112,35 @@ window.GRADE_DATA[1] = {
       sentences: ['Look at the lake.'] },
     { id: 13, letter: 'N', title: 'In the school canteen', vi: 'Ở căng tin',
       words: [
-        { en: 'bananas', ipa: 'bəˈnɑːnəz', vi: 'những quả chuối', emoji: '🍌' },
-        { en: 'noodles', ipa: 'ˈnuːdlz', vi: 'mì sợi', emoji: '🍜' },
+        { en: 'bananas', ipa: 'bəˈnænəz', vi: 'những quả chuối', emoji: '🍌' },
+        { en: 'noodles', ipa: 'ˈnuːdəlz', vi: 'mì sợi', emoji: '🍜' },
         { en: 'nuts', ipa: 'nʌts', vi: 'các loại hạt', emoji: '🥜' },
       ],
       patterns: ["He's having nuts.", "She's having noodles."],
       sentences: ["Nam's having nuts.", "Nick's having noodles."] },
     { id: 14, letter: 'T', title: 'In the toy shop', vi: 'Ở cửa hàng đồ chơi',
       words: [
-        { en: 'teddy bear', ipa: 'ˈtedi beə', vi: 'gấu bông', emoji: '🧸' },
-        { en: 'tiger', ipa: 'ˈtaɪɡə', vi: 'con hổ', emoji: '🐯' },
-        { en: 'top', ipa: 'tɒp', vi: 'con quay', emoji: '🪀' },
-        { en: 'turtle', ipa: 'ˈtɜːtl', vi: 'con rùa', emoji: '🐢' },
+        { en: 'teddy bear', ipa: 'ˈtedi ber', vi: 'gấu bông', emoji: '🧸' },
+        { en: 'tiger', ipa: 'ˈtaɪɡɚ', vi: 'con hổ', emoji: '🐯' },
+        { en: 'top', ipa: 'tɑːp', vi: 'con quay', emoji: '🪀' },
+        { en: 'turtle', ipa: 'ˈtɝːtəl', vi: 'con rùa', emoji: '🐢' },
       ],
       patterns: ['I can see a tiger.'],
       sentences: ['Tony has a top.', 'Tony has a turtle.', 'Tony has a tiger.', 'Tony has a teddy bear.'] },
     { id: 15, letter: 'F', title: 'At the football match', vi: 'Ở trận bóng đá',
       words: [
         { en: 'face', ipa: 'feɪs', vi: 'khuôn mặt', emoji: '😊' },
-        { en: 'father', ipa: 'ˈfɑːðə', vi: 'bố', emoji: '👨' },
+        { en: 'father', ipa: 'ˈfɑːðɚ', vi: 'bố', emoji: '👨' },
         { en: 'foot', ipa: 'fʊt', vi: 'bàn chân', emoji: '🦶' },
-        { en: 'football', ipa: 'ˈfʊtbɔːl', vi: 'bóng đá', emoji: '⚽' },
+        { en: 'football', ipa: 'ˈfʊtbɑːl', vi: 'bóng đá', emoji: '⚽' },
       ],
       patterns: ['Point to your hand.'],
       sentences: ['Bill has a lovely face.', "Bill's watching football.", "Father's watching football."] },
     { id: 16, letter: 'W', title: 'At home', vi: 'Ở nhà',
       words: [
-        { en: 'washing', ipa: 'ˈwɒʃɪŋ', vi: 'đang lau, rửa', emoji: '🧽' },
-        { en: 'water', ipa: 'ˈwɔːtə', vi: 'nước', emoji: '💧' },
-        { en: 'window', ipa: 'ˈwɪndəʊ', vi: 'cửa sổ', emoji: '🪟' },
+        { en: 'washing', ipa: 'ˈwɑːʃɪŋ', vi: 'đang lau, rửa', emoji: '🧽' },
+        { en: 'water', ipa: 'ˈwɑːtɚ', vi: 'nước', emoji: '💧' },
+        { en: 'window', ipa: 'ˈwɪndoʊ', vi: 'cửa sổ', emoji: '🪟' },
       ],
       patterns: ['How many windows can you see? – I can see six.'],
       sentences: ['How many windows?'] },

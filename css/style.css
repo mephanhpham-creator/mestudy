@@ -385,7 +385,10 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.15; margin: 0; }
 .sheet-title { font-size: 30px; text-align: center; }
 .sheet-sub { text-align: center; margin: -8px 0 0; color: var(--ink-2); font-size: 18px; }
 .unit-head { display: flex; gap: 14px; align-items: center; }
-.unit-head .letter-ball { width: 76px; height: 76px; font-size: 44px; }
+.unit-head .letter-ball { width: 76px; height: 76px; font-size: 44px; position: relative; }
+.letter-ball.has-sound { cursor: pointer; }
+.letter-ball i { position: absolute; right: -6px; bottom: -4px; width: 30px; height: 30px; border-radius: 50%; background: #fff; color: var(--primary); display: grid; place-items: center; box-shadow: var(--shadow-sm); }
+.letter-ball i .ic { width: 18px; height: 18px; }
 .unit-head h3 { font-size: 24px; }
 .unit-head p, .unit-head small { margin: 0; color: var(--muted); }
 .unit-head small .stars { font-size: 16px; }

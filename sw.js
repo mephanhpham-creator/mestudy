@@ -1,5 +1,5 @@
 // Tăng VERSION mỗi khi cập nhật nội dung để điện thoại tải bản mới.
-const VERSION = 'chip-v5';
+const VERSION = 'chip-v6';
 const ASSETS = [
   './', 'index.html', 'css/style.css', 'js/app.js', 'js/mascot.js',
   'data/grades.js', 'data/grade1.js', 'manifest.webmanifest',
@@ -21,7 +21,8 @@ self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
     fetch(e.request).then((res) => {
-      if (res.ok && new URL(e.request.url).origin === location.origin) {
+      // chỉ lưu bản đầy đủ (200); audio phát theo đoạn (206) không lưu được vào cache
+      if (res.status === 200 && new URL(e.request.url).origin === location.origin) {
         const copy = res.clone();
         caches.open(VERSION).then((c) => c.put(e.request, copy));
       }

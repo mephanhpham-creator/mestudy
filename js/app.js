@@ -156,11 +156,28 @@
       || vs.find((v) => /en[-_]US/i.test(v.lang)) || vs.find((v) => /^en/i.test(v.lang)) || null;
   }
   if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+  // Phát âm bằng giọng máy Anh–Mỹ (en-US); nếu từ có trường `audio` thì phát file ghi âm đó
+  let player = null;
+  function stopSpeaking() {
+    if (player) { player.pause(); player = null; }
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+  }
+  function playFile(src, rate, fallback) {
+    stopSpeaking();
+    const a = new Audio(src);
+    player = a;
+    a.playbackRate = rate < 0.7 ? 0.7 : 1;       // "Đọc chậm": chậm lại nhưng giữ cao độ giọng
+    a.preservesPitch = true; a.webkitPreservesPitch = true;
+    a.play().catch(() => { if (player === a && fallback) fallback(); });
+    a.onerror = () => { if (player === a && fallback) fallback(); };
+  }
   function speak(word, rate = 0.8) {
-    if (word && word.audio) { new Audio(word.audio).play().catch(() => {}); return; }
-    const text = typeof word === 'string' ? word : word.en;
+    if (word && word.audio) return playFile(word.audio, rate, () => ttsSpeak(word.en, rate));
+    ttsSpeak(typeof word === 'string' ? word : word.en, rate);
+  }
+  function ttsSpeak(text, rate = 0.8) {
     if (!('speechSynthesis' in window)) return;
-    speechSynthesis.cancel();
+    stopSpeaking();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'en-US'; u.rate = rate; if (voice) u.voice = voice;
     speechSynthesis.speak(u);
@@ -469,7 +486,7 @@
     const tone = TONES[(u.id - 1) % TONES.length];
     const st = S.units[unitKey(g, u)];
     modal(`
-      <div class="unit-head"><div class="letter-ball t-${tone}">${u.letter}</div>
+      <div class="unit-head"><button class="letter-ball t-${tone} has-sound" id="letter-sound" aria-label="Nghe chữ ${u.letter}">${u.letter}<i>${ICON.sound}</i></button>
         <div><small>Unit ${u.id}${st ? ` · ${starsHtml(st.stars)}` : ''}</small><h3>${esc(u.title)}</h3><p>${esc(u.vi)}</p></div></div>
       <div class="mini-words">${u.words.map((w) => `<button class="mini-word" data-en="${esc(w.en)}"><span>${pic(w)}</span>${esc(w.en)}${w.ipa ? `<small class="ipa">/${esc(w.ipa)}/</small>` : ''}</button>`).join('')}</div>
       ${u.patterns ? `<div class="sentences"><small>Mẫu câu của bài</small>${u.patterns.map((s) => `<button class="sentence" data-s="${esc(s)}"><i>${ICON.sound}</i>${esc(s)}</button>`).join('')}</div>` : ''}
@@ -478,6 +495,7 @@
         <button class="btn btn-primary" id="go-lesson">Học từ mới ${ICON.chev}</button>
       </div>`, {
       onMount: (m, close) => {
+        $('#letter-sound', m).onclick = () => (u.sound ? playFile(u.sound, 1) : ttsSpeak(u.letter, 0.7));
         $$('.mini-word', m).forEach((b) => b.onclick = () => speak(u.words.find((w) => w.en === b.dataset.en)));
         $$('.sentence', m).forEach((b) => b.onclick = () => speak(b.dataset.s.replace(' – ', ' ')));
         $('#go-lesson', m).onclick = () => { close(); startLesson(g, data, u); };
@@ -875,9 +893,10 @@
         <p class="heard" id="heard"></p>`,
       footer: skipFoot,
     });
-    $('#say').onclick = () => speak(it.text);
-    $('#slow').onclick = () => speak(it.text, 0.5);
-    setTimeout(() => speak(it.text), 300);
+    const model = it.word || it.text; // từ: giọng sách; câu: giọng máy
+    $('#say').onclick = () => speak(model);
+    $('#slow').onclick = () => speak(model, 0.5);
+    setTimeout(() => speak(model), 300);
     bindSpeakFoot(it);
     $('#mic').onclick = () => {
       const mode = speakMode();
@@ -904,7 +923,7 @@
   }
 
   function listenSR(it) {
-    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    stopSpeaking();
     const status = $('#mic-status'), heard = $('#heard');
     const r = new SR();
     rec = r;
