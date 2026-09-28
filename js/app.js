@@ -24,6 +24,7 @@
   const shuffle = (a) => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const pick = (a) => a[Math.floor(Math.random() * a.length)];
   // Ảnh minh họa của từ: dùng `img` nếu có, không thì dùng emoji
+  const ipaHtml = (w) => w.ipa ? `<div class="flash-ipa">/${esc(w.ipa)}/</div>` : '';
   const pic = (w) => w.img ? `<img class="word-img" src="${esc(w.img)}" alt="" onerror="this.replaceWith(document.createTextNode('${w.emoji}'))">` : w.emoji;
 
   // ---------- Icons (nét tròn, đổi màu theo currentColor) ----------
@@ -470,7 +471,7 @@
     modal(`
       <div class="unit-head"><div class="letter-ball t-${tone}">${u.letter}</div>
         <div><small>Unit ${u.id}${st ? ` · ${starsHtml(st.stars)}` : ''}</small><h3>${esc(u.title)}</h3><p>${esc(u.vi)}</p></div></div>
-      <div class="mini-words">${u.words.map((w) => `<button class="mini-word" data-en="${esc(w.en)}"><span>${pic(w)}</span>${esc(w.en)}</button>`).join('')}</div>
+      <div class="mini-words">${u.words.map((w) => `<button class="mini-word" data-en="${esc(w.en)}"><span>${pic(w)}</span>${esc(w.en)}${w.ipa ? `<small class="ipa">/${esc(w.ipa)}/</small>` : ''}</button>`).join('')}</div>
       ${u.patterns ? `<div class="sentences"><small>Mẫu câu của bài</small>${u.patterns.map((s) => `<button class="sentence" data-s="${esc(s)}"><i>${ICON.sound}</i>${esc(s)}</button>`).join('')}</div>` : ''}
       <div class="row-actions">
         <button class="btn btn-ghost" id="go-speak">${ICON.mic} Luyện đọc</button>
@@ -575,6 +576,7 @@
         <div class="flash">
           <div class="flash-pic">${pic(w)}</div>
           <div class="flash-word">${esc(w.en)}</div>
+          ${ipaHtml(w)}
           <div class="flash-vi">${esc(w.vi)}</div>
           <button class="sound-btn" id="say" aria-label="Nghe">${ICON.sound}</button>
         </div>
@@ -610,7 +612,7 @@
         <div class="opts list">${q.options.map((o, i) => `<button class="opt" data-i="${i}"><em>${ABCD[i]}</em>${esc(o.en)}</button>`).join('')}</div>`;
     } else if (q.type === 'meaning') {
       body = `<div class="prompt-card"><h3>Chọn nghĩa đúng</h3>
-          <div class="q-word"><button class="sound-btn" id="say" aria-label="Nghe">${ICON.sound}</button>${esc(w.en)}</div></div>
+          <div class="q-word"><button class="sound-btn" id="say" aria-label="Nghe">${ICON.sound}</button>${esc(w.en)}</div>${ipaHtml(w)}</div>
         <div class="opts list">${q.options.map((o, i) => `<button class="opt" data-i="${i}"><em>${ABCD[i]}</em>${esc(o.vi)}</button>`).join('')}</div>`;
     } else {
       q.letters = q.letters || shuffle(w.en.split('').map((ch, i) => ({ ch, i })));
@@ -858,7 +860,7 @@
         <div class="flash speak-card">
           ${it.word ? `<div class="flash-pic">${pic(it.word)}</div>` : ''}
           <div class="speak-target ${it.type}" id="target">${it.parts.map((p) => `<span>${esc(p)}</span>`).join(' ')}</div>
-          ${it.word ? `<div class="flash-vi">${esc(it.word.vi)}</div>` : ''}
+          ${it.word ? `${ipaHtml(it.word)}<div class="flash-vi">${esc(it.word.vi)}</div>` : ''}
         </div>
         <div class="speak-listen">
           <button class="btn btn-ghost" id="say">${ICON.sound} Nghe mẫu</button>

@@ -1,5 +1,5 @@
 // Tăng VERSION mỗi khi cập nhật nội dung để điện thoại tải bản mới.
-const VERSION = 'chip-v4';
+const VERSION = 'chip-v5';
 const ASSETS = [
   './', 'index.html', 'css/style.css', 'js/app.js', 'js/mascot.js',
   'data/grades.js', 'data/grade1.js', 'manifest.webmanifest',
