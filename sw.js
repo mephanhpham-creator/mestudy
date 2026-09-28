@@ -1,0 +1,38 @@
+// Tăng VERSION mỗi khi cập nhật nội dung để điện thoại tải bản mới.
+const VERSION = 'chip-v3';
+const ASSETS = [
+  './', 'index.html', 'css/style.css', 'js/app.js', 'js/mascot.js',
+  'data/grades.js', 'data/grade1.js',
+  'manifest.webmanifest', 'icons/icon.svg',
+];
+
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener('activate', (e) => {
+  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
+    .then(() => self.clients.claim()));
+});
+
+// Network-first cho file của app (luôn lấy bản mới khi có mạng), fallback cache khi offline.
+self.addEventListener('fetch', (e) => {
+  if (e.request.method !== 'GET') return;
+  e.respondWith(
+    fetch(e.request).then((res) => {
+      if (res.ok && new URL(e.request.url).origin === location.origin) {
+        const copy = res.clone();
+        caches.open(VERSION).then((c) => c.put(e.request, copy));
+      }
+      return res;
+    }).catch(() => caches.match(e.request, { ignoreSearch: true }))
+  );
+});
+
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+    for (const c of list) if ('focus' in c) return c.focus();
+    return self.clients.openWindow('./');
+  }));
+});

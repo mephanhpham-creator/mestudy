@@ -1,0 +1,4 @@
+# Prompt thiết kế: giữ riêng trên máy, không đưa lên repo
+PROMPT_*.md
+# Ảnh thiết kế gốc: giữ trên máy
+design/
