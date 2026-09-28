@@ -2,6 +2,9 @@
 
 Web app học từ vựng tiếng Anh lớp 1–12 (theo bộ sách Global Success) cùng mascot Chíp.
 
+👉 **Học ngay:** https://mephanhpham-creator.github.io/mestudy/
+(Trên điện thoại: mở link → menu trình duyệt → *Thêm vào màn hình chính* để dùng như app.)
+
 - Học từ mới bằng thẻ hình, nghe phát âm
 - 4 dạng bài luyện tập, ôn lại từ hay sai
 - 🎤 Luyện đọc: đọc to, app nhận giọng nói và chấm điểm
