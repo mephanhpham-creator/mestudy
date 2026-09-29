@@ -710,7 +710,7 @@
         <div class="prompt-card spell">
           <div class="q-pic">${pic(w)}</div>
           <div class="q-hint">${esc(w.vi)}</div>
-          <div class="slots">${w.en.split('').map((_, i) => `<span class="slot" data-s="${i}"></span>`).join('')}</div>
+          <div class="slots" style="--n:${w.en.length}">${w.en.split('').map((_, i) => `<span class="slot" data-s="${i}"></span>`).join('')}</div>
         </div>
         <div class="tiles">${q.letters.map((t, i) => `<button class="tile t${i % 5}" data-t="${i}">${t.ch}</button>`).join('')}</div>
         <div class="coach center">${mascotSVG('think', 130)}</div>`;
@@ -952,7 +952,7 @@
         <h3 class="q-heading">${it.type === 'word' ? 'Đọc to từ này' : 'Đọc to câu này'}</h3>
         <div class="flash speak-card">
           ${it.word ? `<div class="flash-pic">${pic(it.word)}</div>` : ''}
-          <div class="speak-target ${it.type}" id="target">${it.parts.map((p) => `<span>${esc(p)}</span>`).join(' ')}</div>
+          <div class="speak-target st-${it.type}" id="target">${it.parts.map((p) => `<span>${esc(p)}</span>`).join(' ')}</div>
           ${it.word ? `${ipaHtml(it.word)}<div class="flash-vi">${esc(it.word.vi)}</div>` : ''}
         </div>
         <div class="speak-listen">

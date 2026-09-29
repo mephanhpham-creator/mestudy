@@ -499,12 +499,14 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.15; margin: 0; }
 .opt.wrong { border-color: var(--red); background: #FFEFF0; animation: shake .35s; }
 @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 .prompt-card.spell .q-pic { font-size: 130px; }
-.slots { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 6px; }
+/* Ô điền chữ luôn nằm trên 1 dòng: mỗi ô co lại theo số chữ cái (--n) */
+.slots { --gap: 6px; display: flex; gap: var(--gap); flex-wrap: nowrap; justify-content: center; margin-top: 6px; width: 100%; }
 .slot {
-  width: 56px; height: 66px; border-radius: 16px; border: 3px solid #E3DBFF; background: #fff; display: grid; place-items: center;
-  font-family: var(--font-head); font-size: 36px; color: var(--ink); position: relative;
+  flex: 0 1 56px; min-width: 0; width: calc((100% - (var(--n, 5) - 1) * var(--gap)) / var(--n, 5)); max-width: 56px;
+  aspect-ratio: 56 / 66; border-radius: 14px; border: 3px solid #E3DBFF; background: #fff; display: grid; place-items: center;
+  font-family: var(--font-head); font-size: clamp(20px, 7vw, 36px); color: var(--ink); position: relative;
 }
-.slot:not(.filled)::after { content: ''; position: absolute; bottom: 12px; left: 14px; right: 14px; height: 4px; border-radius: 4px; background: #D9CFFF; }
+.slot:not(.filled)::after { content: ''; position: absolute; bottom: 18%; left: 25%; right: 25%; height: 4px; border-radius: 4px; background: #D9CFFF; }
 .slot.filled { border-color: #C9B7FF; box-shadow: var(--shadow-sm); cursor: pointer; }
 .tiles { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 .tile {
@@ -613,7 +615,7 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.15; margin: 0; }
 .speaking .flash { padding-bottom: 20px; }
 .speaking .flash-pic { font-size: 120px; }
 .speak-target { font-family: var(--font-head); font-weight: 800; font-size: 60px; color: var(--ink); text-align: center; line-height: 1.2; }
-.speak-target.sentence { font-size: 34px; }
+.speak-target.st-sentence { font-size: 34px; }
 .speak-target span { padding: 0 6px; border-radius: 12px; transition: background .2s; display: inline-block; }
 .speak-target span.ok { color: #139243; background: #DDF8E8; }
 .speak-target span.no { color: #E0343F; background: #FFE3E5; text-decoration: underline wavy; text-underline-offset: 8px; text-decoration-thickness: 2px; }
@@ -691,7 +693,7 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.15; margin: 0; }
   .speaking .flash { padding: 14px 16px 16px; }
   .speaking .flash-pic { font-size: 90px; }
   .speaking .speak-target { font-size: 50px; }
-  .speaking .speak-target.sentence { font-size: 30px; }
+  .speaking .speak-target.st-sentence { font-size: 30px; }
   .mic-btn { width: 112px; height: 112px; }
   .mic-btn .ic { width: 50px; height: 50px; }
   .mic-mascot { width: 96px; }
