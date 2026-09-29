@@ -136,7 +136,7 @@
   function prepareGrade(data) {
     if (!data || data.prepared) return data;
     data.units.forEach((u) => {
-      u.badge = u.letter || String(u.id);
+      u.badge = u.letter || u.badgeText || String(u.id);
       u.words.forEach((w) => { if (!w.emoji) { w.emoji = u.icon || '📘'; w.noPic = true; } });
       // Unit tới 9 từ học trong 1 bài; dài hơn thì chia phần ~7 từ
       const n = u.words.length <= 9 ? 1 : Math.ceil(u.words.length / PART_SIZE), size = Math.ceil(u.words.length / n);
@@ -145,6 +145,8 @@
     data.prepared = true;
     return data;
   }
+  // Tên hiển thị của Unit ("Unit 3"), hoặc tên riêng như "Starter"
+  const uname = (u) => u.name || `Unit ${u.id}`;
   const unitKey = (g, u) => `g${g}:u${u.id}`;
   // Unit 1 phần giữ khóa cũ (tương thích tiến độ đã lưu của lớp 1)
   const partKey = (g, u, p) => (u.parts.length === 1 ? unitKey(g, u) : `${unitKey(g, u)}:p${p + 1}`);
@@ -444,14 +446,14 @@
               <div class="gc-bar"><div class="bar yellow"><i style="width:${Math.round((done / goal.lessons) * 100)}%"></i></div><b>${done}/${goal.lessons}</b></div>
               <div class="gc-pills">
                 <span class="pill">${done >= goal.lessons ? '🎉 Hoàn thành' : `📝 Còn ${goal.lessons - done} bài`}</span>
-                ${next ? `<span class="pill">⏩ Tiếp: Unit ${next.id}</span>` : ''}
+                ${next ? `<span class="pill">⏩ Tiếp: ${uname(next)}</span>` : ''}
               </div>
             </div>
           </div>
           ${next ? `
           <h2 class="sec-title">Học tiếp</h2>
           <button class="continue-card" id="btn-continue">
-            <span class="cc-text"><b>Unit ${next.id} – ${esc(next.title)}</b><small>${esc(next.vi)}${next.parts.length > 1 ? ` · Phần ${nextPartOf(g, next) + 1}/${next.parts.length}` : ''}</small></span>
+            <span class="cc-text"><b>${uname(next)} – ${esc(next.title)}</b><small>${esc(next.vi)}${next.parts.length > 1 ? ` · Phần ${nextPartOf(g, next) + 1}/${next.parts.length}` : ''}</small></span>
             <span class="cc-pics">${[...next.parts[nextPartOf(g, next)].filter((w) => !w.noPic), { emoji: next.icon || '📘' }].slice(0, 4).map((w) => `<span>${pic(w)}</span>`).join('')}</span>
             <span class="cc-play">${ICON.play}</span>
           </button>` : ''}
@@ -496,14 +498,14 @@
           <svg class="map-line" viewBox="0 0 100 ${states.length * ROW}" preserveAspectRatio="none"><path d="${d}"/></svg>
           ${states.map((s, i) => `
             <div class="map-row ${i % 2 ? 'right' : 'left'}" style="top:${i * ROW}px">
-              <button class="coin ${s.done ? 'gold' : s.locked ? 'grey' : 'purple'} ${s.next ? 'current' : ''}" data-unit="${i}" aria-label="Unit ${s.u.id}">
+              <button class="coin ${s.done ? 'gold' : s.locked ? 'grey' : 'purple'} ${s.next ? 'current' : ''}" data-unit="${i}" aria-label="${uname(s.u)}">
                 ${s.done ? starsHtml(s.stars, 'coin-stars') : ''}
                 <span class="coin-face ${s.u.badge.length > 1 ? 'num' : ''}">${s.u.badge}</span>
                 ${s.locked ? `<span class="coin-lock">${ICON.lock}</span>` : ''}
                 <span class="island"></span>
               </button>
               ${s.next ? `<div class="coin-chip">${mascotSVG('happy', 92)}<div class="say">Học tiếp nào!</div></div>` : ''}
-              <button class="unit-pill ${s.next ? 'wide' : ''}" data-unit="${i}"><span><b>Unit ${s.u.id}</b>${s.next || window.innerWidth >= 768 ? `<small>${esc(s.u.title)}</small>` : ''}${s.total > 1 && !s.locked ? `<em class="part-prog">${s.doneParts}/${s.total} phần</em>` : ''}</span>${ICON.chev}</button>
+              <button class="unit-pill ${s.next ? 'wide' : ''}" data-unit="${i}"><span><b>${uname(s.u)}</b>${s.next || window.innerWidth >= 768 ? `<small>${esc(s.u.title)}</small>` : ''}${s.total > 1 && !s.locked ? `<em class="part-prog">${s.doneParts}/${s.total} phần</em>` : ''}</span>${ICON.chev}</button>
             </div>`).join('')}
         </div>
       </section>`);
@@ -538,7 +540,7 @@
     }).join('')}</div>` : `<div class="mini-words">${u.words.map(miniWord).join('')}</div>`;
     modal(`
       <div class="unit-head"><button class="letter-ball t-${tone} has-sound ${u.letter ? '' : 'emoji'}" id="letter-sound" aria-label="Nghe">${u.letter || u.icon || u.badge}<i>${ICON.sound}</i></button>
-        <div><small>Unit ${u.id}${pr.done ? ` · ${starsHtml(pr.stars)}` : multi ? ` · ${pr.doneParts}/${pr.total} phần` : ''}</small><h3>${esc(u.title)}</h3><p>${esc(u.vi)} · ${u.words.length} từ</p></div></div>
+        <div><small>${uname(u)}${pr.done ? ` · ${starsHtml(pr.stars)}` : multi ? ` · ${pr.doneParts}/${pr.total} phần` : ''}</small><h3>${esc(u.title)}</h3><p>${esc(u.vi)} · ${u.words.length} từ</p></div></div>
       ${partsHtml}
       ${u.patterns ? `<div class="sentences"><small>Mẫu câu của bài</small>${u.patterns.map((s) => `<button class="sentence" data-s="${esc(s)}"><i>${ICON.sound}</i>${esc(s)}</button>`).join('')}</div>` : ''}
       ${multi ? '' : `<div class="row-actions">
@@ -650,7 +652,7 @@
     // Chỉ hiện câu ví dụ có chứa đúng từ đang học (tối đa 2 câu)
     const examples = [...(L.u.patterns || []), ...(L.u.sentences || [])].filter((s) => wordRe(w.en).test(s)).slice(0, 2);
     lessonShell({
-      title: L.u.parts.length > 1 ? `Unit ${L.u.id} · Phần ${L.part + 1}` : `Unit ${L.u.id} · Từ mới`, seg: [L.idx + 1, L.words.length], cls: 'learn',
+      title: L.u.parts.length > 1 ? `${uname(L.u)} · Phần ${L.part + 1}` : `${uname(L.u)} · Từ mới`, seg: [L.idx + 1, L.words.length], cls: 'learn',
       body: `
         <div class="flash ${w.noPic ? 'no-pic' : ''}">
           <div class="flash-pic">${pic(w)}</div>
@@ -800,7 +802,7 @@
     const r = L.result;
     const n = currentStreak();
     const partTxt = L.u && L.u.parts.length > 1 ? ` – Phần ${L.part + 1}` : '';
-    const title = L.kind === 'unit' ? `Hoàn thành Unit ${L.u.id}${partTxt}!` : L.kind === 'speak' ? `Luyện đọc Unit ${L.u.id}${partTxt} xong!` : 'Ôn tập xong rồi!';
+    const title = L.kind === 'unit' ? `Hoàn thành ${uname(L.u)}${partTxt}!` : L.kind === 'speak' ? `Luyện đọc ${uname(L.u)}${partTxt} xong!` : 'Ôn tập xong rồi!';
     app.innerHTML = `
       <section class="screen result">
         <div class="res-mascot"><span class="burst"></span>${mascotSVG(r.extended || r.stars === 3 ? 'fire' : 'cheer', 230)}</div>
@@ -1089,7 +1091,7 @@
       return `
         <button class="speak-unit ${s.locked ? 'locked' : ''}" data-unit="${i}">
           <span class="letter-ball ${s.locked ? 't-grey' : 't-' + tone}">${s.u.badge}</span>
-          <span class="su-info"><b>Unit ${s.u.id} · ${esc(s.u.title)}</b>${s.locked ? '<small>Chưa mở</small>' : `${starsHtml(sp.stars)}${sp.total > 1 ? `<small class="su-parts">${sp.doneParts}/${sp.total} phần</small>` : ''}`}</span>
+          <span class="su-info"><b>${uname(s.u)} · ${esc(s.u.title)}</b>${s.locked ? '<small>Chưa mở</small>' : `${starsHtml(sp.stars)}${sp.total > 1 ? `<small class="su-parts">${sp.doneParts}/${sp.total} phần</small>` : ''}`}</span>
           <span class="su-pics">${pics.map((w) => `<span>${pic(w)}</span>`).join('')}</span>
           <span class="su-mic">${s.locked ? ICON.lock : ICON.mic}</span>
         </button>`;
