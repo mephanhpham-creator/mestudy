@@ -510,7 +510,7 @@ const G7_SKILLS = {
     'They are famous for their unique tattoos and haka dance.',
   ],
 };
-// Lời bài nghe Skills 2 (Sách giáo viên) – đã đọc Unit 1–7
+// Lời bài nghe Skills 2 (Sách giáo viên), Unit 1–12
 const G7_LISTEN = {
   1: ['No, it isn\'t. I use cardboard and glue to build the house and make the furniture.', "Well, I'm more patient and creative now."],
   2: ['Healthy habits help us keep fit and avoid disease.', 'They provide a lot of vitamins.', 'Eat meat, eggs, and cheese, but not too much. You may put on weight.'],
@@ -518,7 +518,43 @@ const G7_LISTEN = {
   4: ['In the 16th century artists began to draw on the pavement using chalk.', 'About 600 artists work on the pavement to make the street a huge art gallery!'],
   5: ['For breakfast, we usually have pho or eel soup with bread.', 'Then we have some fruit and green tea.'],
   6: ['We are busy with our subjects, but we really enjoy the opportunities we have for outdoor activities.', "I'm sure your activities help us protect our environment."],
-  7: ["A 'Cycle lane' sign means that you can cycle there."],
+  7: [
+    "A 'Cycle lane' sign means that you can cycle there.",
+    'Traffic jams happen nearly every day, so drivers have to spend a lot of time on the road.',
+    'Also, many road users do not obey the traffic rules.',
+    'There are too many vehicles on the road.',
+    'Many roads are narrow and bumpy.',
+  ],
+  8: [
+    "It's a comedy and its director is Nancy Simon.",
+    "Although they are twins, they don't grow up together after their parents' marriage ends.",
+    "Yes, most people say it's a must-see for young people because it's funny and moving.",
+    'The acting and music are excellent, too.',
+  ],
+  9: [
+    'Today I\'m going to talk about Thanksgiving, or Turkey Day.',
+    'People from Canada and the USA celebrate it every year to be thankful for successful harvests.',
+    'We usually prepare a feast for family and friends.',
+    'Both adults and children take part in the food preparation.',
+    'My parents volunteer to cook and serve food to homeless people.',
+  ],
+  10: [
+    'I have some electrical appliances, such as a TV, a CD player.',
+    'Well, we use low energy light bulbs at my house.',
+    "We use solar panels to warm water too. It's cheap and clean.",
+  ],
+  11: [
+    'Bullet trains will be faster and safer than cars and they can help avoid traffic accidents.',
+    'They will not use up much space and will be safe because they run on autopilot.',
+    'Bamboo-copters will be cheaper and easier for them to use.',
+    'I think people will use solar-powered ships to travel on sea.',
+    'They will be eco-friendly and comfortable.',
+  ],
+  12: [
+    "You can see the Queen's beautiful garden, and her collection of artworks.",
+    'It is one of the most famous symbols of the United Kingdom.',
+    'You will see historic attractions along the river.',
+  ],
 };
 window.GRADE_DATA[7].units.forEach((u) => { (G7_SENTENCES[u.id] = G7_SENTENCES[u.id] || []).push(...(G7_LISTEN[u.id] || [])); });
 window.GRADE_DATA[7].units.forEach((u) => {
