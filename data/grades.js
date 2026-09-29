@@ -5,7 +5,7 @@
 window.GRADES = [
   { id: 1,  name: 'Lớp 1',  book: 'Tiếng Anh 1 Global Success',  src: 'data/grade1.js' },
   { id: 2,  name: 'Lớp 2',  book: 'Tiếng Anh 2 Global Success',  src: null },
-  { id: 3,  name: 'Lớp 3',  book: 'Tiếng Anh 3 Global Success',  src: null },
+  { id: 3,  name: 'Lớp 3',  book: 'Tiếng Anh 3 Global Success',  src: 'data/grade3.js' },
   { id: 4,  name: 'Lớp 4',  book: 'Tiếng Anh 4 Global Success',  src: null },
   { id: 5,  name: 'Lớp 5',  book: 'Tiếng Anh 5 Global Success',  src: null },
   { id: 6,  name: 'Lớp 6',  book: 'Tiếng Anh 6 Global Success',  src: null },

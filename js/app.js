@@ -138,7 +138,8 @@
     data.units.forEach((u) => {
       u.badge = u.letter || String(u.id);
       u.words.forEach((w) => { if (!w.emoji) { w.emoji = u.icon || '📘'; w.noPic = true; } });
-      const n = Math.max(1, Math.ceil(u.words.length / PART_SIZE)), size = Math.ceil(u.words.length / n);
+      // Unit tới 9 từ học trong 1 bài; dài hơn thì chia phần ~7 từ
+      const n = u.words.length <= 9 ? 1 : Math.ceil(u.words.length / PART_SIZE), size = Math.ceil(u.words.length / n);
       u.parts = [...Array(n)].map((_, i) => u.words.slice(i * size, (i + 1) * size));
     });
     data.prepared = true;
