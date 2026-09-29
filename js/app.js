@@ -169,6 +169,16 @@
       return { u, stars: pr.stars, done: pr.done, doneParts: pr.doneParts, total: pr.total, locked, next: false };
     }).map((x, i, arr) => ({ ...x, next: !x.locked && !x.done && arr.findIndex((y) => !y.locked && !y.done) === i }));
   }
+  // Nhận ra từ trong câu, kể cả dạng -s/-es/-d/-ed/-ing (provide → provided, perform → performing)
+  function wordRe(en) {
+    const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const words = en.toLowerCase().trim().split(/\s+/), last = words.pop();
+    const stems = [last];
+    if (last.endsWith('e')) stems.push(last.slice(0, -1));
+    if (last.endsWith('y')) stems.push(last.slice(0, -1) + 'i');
+    const head = words.map(esc).join('[\\s-]+');
+    return new RegExp(`\\b${head ? head + '[\\s-]+' : ''}(?:${stems.map(esc).join('|')})(?:s|es|d|ed|ing)?\\b`, 'i');
+  }
   const nextUnitOf = (g, data) => data.units.find((u) => !unitProgress(g, u).done) || data.units[data.units.length - 1];
 
   // ---------- Audio ----------
@@ -636,9 +646,8 @@
 
   function renderLearnCard() {
     const w = L.words[L.idx];
-    // Chỉ hiện câu ví dụ có chứa đúng từ đang học
-    const hasWord = new RegExp(`\\b${w.en.replace(/[^a-z ]/gi, '')}(s|es)?\\b`, 'i');
-    const examples = [...(L.u.patterns || []), ...(L.u.sentences || [])].filter((s) => hasWord.test(s));
+    // Chỉ hiện câu ví dụ có chứa đúng từ đang học (tối đa 2 câu)
+    const examples = [...(L.u.patterns || []), ...(L.u.sentences || [])].filter((s) => wordRe(w.en).test(s)).slice(0, 2);
     lessonShell({
       title: L.u.parts.length > 1 ? `Unit ${L.u.id} · Phần ${L.part + 1}` : `Unit ${L.u.id} · Từ mới`, seg: [L.idx + 1, L.words.length], cls: 'learn',
       body: `
@@ -912,10 +921,11 @@
 
   function startSpeak(g, data, u, part = nextPartOf(g, u, S.speak)) {
     const words = u.parts[part] || u.words;
-    // câu mẫu chỉ đi kèm phần cuối của Unit để mỗi bài đọc không quá dài
-    const sentences = part === u.parts.length - 1 ? [...(u.patterns || []), ...(u.sentences || [])]
-      .map((s) => s.replace(/\s+–\s+/g, ' '))
-      .filter((s, i, a) => a.indexOf(s) === i).slice(0, 4) : [];
+    // Unit 1 phần: đọc các câu của Unit; Unit nhiều phần: chỉ đọc câu có chứa từ của phần đó
+    const all = [...(u.patterns || []), ...(u.sentences || [])];
+    const pool = u.parts.length > 1 ? all.filter((s) => words.some((w) => wordRe(w.en).test(s))) : all;
+    const sentences = pool.map((s) => s.replace(/\s+–\s+/g, ' '))
+      .filter((s, i, a) => a.indexOf(s) === i).slice(0, u.parts.length > 1 ? 3 : 4);
     const items = [
       ...words.map((w) => ({ type: 'word', text: w.en, word: w })),
       ...sentences.map((s) => ({ type: 'sentence', text: s })),

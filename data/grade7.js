@@ -313,3 +313,97 @@ window.GRADE_DATA[7] = {
       ] },
   ],
 };
+
+// Câu ví dụ – nguyên văn từ Sách giáo viên Tiếng Anh 7 Global Success
+// (hội thoại Getting Started, đáp án và câu luyện phát âm A Closer Look 1–2).
+// Thẻ từ chỉ hiện câu có chứa đúng từ đang học (kể cả dạng -s, -ed, -ing).
+const G7_SENTENCES = {
+  1: [
+    "I love your dollhouse. It's amazing.",
+    'Yes. My hobby is building dollhouses.',
+    'All you need is some cardboard and glue.',
+    'I like horse riding.',
+    "That's rather unusual. Not many people do that.",
+    'They enjoy gardening.',
+    'I go jogging every Thursday.',
+  ],
+  2: [
+    'Outdoor activities are good for our health.',
+    "It's really hot and sunny at noon, so you might get sunburn.",
+    'We need vitamin A for our eyes.',
+    'Being active helps keep you fit.',
+    'That sounds really healthy.',
+  ],
+  3: [
+    'I bought you a board game.',
+    'Our Green School Club will have some community activities on that morning.',
+    'We pick up litter around our school and plant vegetables in our school garden.',
+    'We donate the vegetables to a nursing home.',
+    'We donate books to homeless children.',
+    "She's reading books to the elderly.",
+    'They decide to exchange houses.',
+    'We provided food for homeless children last Tet holiday.',
+    'Teenagers volunteered to clean streets.',
+    "She's planting trees in the park.",
+  ],
+  4: [
+    'Maybe we should go to an art gallery next weekend?',
+    "Sounds good, but I'd prefer to go to the music festival at my school.",
+    'It was a pleasure to listen to the musicians performing yesterday.',
+  ],
+  5: [
+    "We'd like rice with some pork cooked in fish sauce.",
+    'Could we also have an order of roast chicken and fried vegetables?',
+    "And I'd like some fried tofu and spring rolls too.",
+    "Would you like any canh? It's a kind of Vietnamese soup.",
+    'With shrimp, please.',
+    'We have a lot of drinks: juice, lemonade, green tea, mineral water.',
+    'A teaspoon of salt.',
+    'A tablespoon of sugar.',
+    '200 grams of flour.',
+    'I like pork cooked with vegetables.',
+  ],
+  6: [
+    "I'm preparing to visit Binh Minh Lower Secondary School.",
+    "We'll meet the students and share ideas for a project in our English class.",
+    'The most gifted student in our school is Long.',
+  ],
+  7: [
+    'Sometimes, when there are traffic jams, it takes longer.',
+  ],
+  8: [
+    'Is it a fantasy?',
+    "No, it's a horror film.",
+    "That's too scary for me.",
+    "It's a documentary.",
+    "It's a comedy.",
+    'And who stars in it?',
+    'What are the reviews like?',
+    "It's about a young wizard called Harry Potter.",
+  ],
+  9: [
+    'It was the Dutch Tulip Festival.',
+    'I watched Dutch folk dances.',
+    'The dancers wore traditional costumes.',
+    'I also saw beautiful tulip floats at a parade.',
+    'At Halloween, people carve faces into pumpkins to scare ghosts and other spirits.',
+  ],
+  10: [
+    "I'm doing a project on energy sources.",
+    "Well, it's power that we use to provide us with light, heat or electricity.",
+    'We call them non-renewable sources.',
+    'Renewable means we can easily replace them.',
+  ],
+  11: [
+    "It's a pity that we don't have a hyperloop now!",
+    "There will be no fumes, and it's totally safe.",
+    'A teleporter is also fast, safe and eco-friendly.',
+    "But it's a different mode of travel.",
+  ],
+  12: [
+    'We went penguin watching.',
+    'Australia has amazing landscapes.',
+    'I got to use my English in real life: asking for directions, reading maps, talking to local people.',
+  ],
+};
+window.GRADE_DATA[7].units.forEach((u) => { u.sentences = G7_SENTENCES[u.id] || []; });
