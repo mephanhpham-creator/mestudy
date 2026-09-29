@@ -317,6 +317,7 @@ window.GRADE_DATA[7] = {
 // Câu ví dụ – nguyên văn từ Sách giáo viên Tiếng Anh 7 Global Success
 // (hội thoại Getting Started, đáp án và câu luyện phát âm A Closer Look 1–2).
 // Thẻ từ chỉ hiện câu có chứa đúng từ đang học (kể cả dạng -s, -ed, -ing).
+{
 const G7_SENTENCES = {
   1: [
     "I love your dollhouse. It's amazing.",
@@ -406,4 +407,111 @@ const G7_SENTENCES = {
     'I got to use my English in real life: asking for directions, reading maps, talking to local people.',
   ],
 };
-window.GRADE_DATA[7].units.forEach((u) => { u.sentences = G7_SENTENCES[u.id] || []; });
+// Câu thêm – nguyên văn bài đọc Skills 1 (và Skills 2) trong Sách học sinh Tiếng Anh 7 Global Success
+const G7_SKILLS = {
+  1: [
+    'Gardening belongs to the most popular group – doing things.',
+    'Gardening is one of the oldest outdoor activities.',
+    'Children can also learn about insects and bugs.',
+    'When gardening, children learn to be patient and take on responsibility.',
+    'They learn to wait for the plants to grow to maturity.',
+    'This teaches them valuable lessons about responsibility.',
+    'Gardening is also good because everyone in the family can join in and do something together.',
+  ],
+  2: [
+    'Acne is a skin condition.',
+    'It causes small, red spots on the face and the back.',
+    "It's not a serious disease but young people want to avoid it.",
+    'Wash your face with special soap for acne, but no more than twice a day.',
+    "Don't touch or pop spots, especially when your hands are dirty.",
+    'I have chapped lips.',
+    'I have the flu.',
+  ],
+  3: [
+    'You can plant trees in your area.',
+    'You can join clean-up activities.',
+    'You can donate food and clothes.',
+    'You can sing and dance with the elderly in a nursing home.',
+    'The school believes that a good way for students to develop themselves is through community service.',
+    'Upper grade students tutor lower grade students.',
+    'Students collect paper and exchange it for plants.',
+    'They feel useful and proud because they do good things.',
+    'We collected rubbish in a nearby park.',
+  ],
+  4: [
+    'Yesterday I went to see a puppet show at a theatre in the centre of Ha Noi.',
+    'The artists performed the show in a pool.',
+    'They used strings under the water to control the puppets and make them move on the water!',
+    'Water puppetry is a special traditional art form.',
+  ],
+  5: [
+    'Pho is a special kind of traditional Vietnamese dish.',
+    'Its main ingredients are rice noodles and slices of beef or chicken.',
+    'The rice noodles are made from the best kind of rice.',
+    'The broth for pho is made by stewing beef or chicken bones for a long time in a big pot.',
+  ],
+  6: [
+    'It used to be a school for children from rich and royal families.',
+    'Well-known people such as Ho Chi Minh, Vo Nguyen Giap, Xuan Dieu studied there.',
+    'Nowadays, the school is for gifted students.',
+    'They have to pass an entrance exam to enter the school.',
+    'The school has over 50 classrooms with TVs, projectors, and computers.',
+    'It also has a swimming pool, a library, two English labs, four computer rooms, and many other modern facilities.',
+  ],
+  7: [
+    'These are some rules about road safety.',
+    'It is important to obey these rules when you are a road user.',
+    'Use the pavement or footpath.',
+    'Walk across the street at the zebra crossing.',
+    'Always keep both hands on the handlebars.',
+    'Wear helmets, and always use the cycle lane.',
+    "Don't carry more than one passenger.",
+    'Fasten your seatbelt when you are in a car.',
+    "Don't stick any body parts out of the window of a moving vehicle.",
+  ],
+  8: [
+    'Harry Potter and the Sorcerer\'s Stone is a fantasy.',
+    'Its director is Chris Columbus.',
+    "He's a powerful wizard.",
+    'The film received a lot of good reviews.',
+    "People say it's a must-see for teens.",
+    'I agree because the story is gripping and the acting is excellent.',
+    'It is a little frightening at times.',
+  ],
+  9: [
+    "It's the largest gathering for twins in the world.",
+    'Yesterday morning my twin sister and I joined the Double Take Parade, a parade of twins.',
+    'It featured singing, dancing, comedy, and other things.',
+    'I loved the performance by the twins from Korea the most.',
+    'This is one of the most exciting festivals I\'ve been to.',
+    'When we talk about Christmas, we think of the Christmas tree. It is the symbol of a long life.',
+  ],
+  10: [
+    'Non-renewable sources are coal, oil and natural gas.',
+    'We can use these sources to produce energy.',
+    'But they are very limited and will run out soon.',
+    'When energy comes from the sun, we call it solar energy.',
+    'Hydro energy comes from water.',
+    'Renewable sources are available, clean and safe to use.',
+  ],
+  11: [
+    'Roadrunner is a car company that makes electric cars.',
+    'Speed is safe, fast, comfortable, and not very expensive.',
+    'The new model will also be more economical.',
+    'Both models have an autopilot function, so they are driverless.',
+  ],
+  12: [
+    'New Zealand is an island country in the Pacific Ocean.',
+    'Everywhere you go, you can see amazing natural landscapes.',
+    'You can see shining beaches, high waterfalls, and ancient forests.',
+    'You can visit historic Queenstown.',
+    'New Zealand is rich in culture.',
+    'The Maori are the native people of this country.',
+    'They are famous for their unique tattoos and haka dance.',
+  ],
+};
+window.GRADE_DATA[7].units.forEach((u) => {
+  // câu Skills trước (thường chứa đúng từ trong Glossary), rồi câu hội thoại; bỏ câu trùng
+  u.sentences = [...(G7_SKILLS[u.id] || []), ...(G7_SENTENCES[u.id] || [])].filter((s, i, a) => a.indexOf(s) === i);
+});
+}
