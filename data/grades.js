@@ -9,7 +9,7 @@ window.GRADES = [
   { id: 4,  name: 'Lớp 4',  book: 'Tiếng Anh 4 Global Success',  src: null },
   { id: 5,  name: 'Lớp 5',  book: 'Tiếng Anh 5 Global Success',  src: null },
   { id: 6,  name: 'Lớp 6',  book: 'Tiếng Anh 6 Global Success',  src: null },
-  { id: 7,  name: 'Lớp 7',  book: 'Tiếng Anh 7 Global Success',  src: null },
+  { id: 7,  name: 'Lớp 7',  book: 'Tiếng Anh 7 Global Success',  src: 'data/grade7.js' },
   { id: 8,  name: 'Lớp 8',  book: 'Tiếng Anh 8 Global Success',  src: null },
   { id: 9,  name: 'Lớp 9',  book: 'Tiếng Anh 9 Global Success',  src: null },
   { id: 10, name: 'Lớp 10', book: 'Tiếng Anh 10 Global Success', src: null },

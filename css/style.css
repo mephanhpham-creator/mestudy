@@ -392,6 +392,33 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.15; margin: 0; }
 .unit-head h3 { font-size: 24px; }
 .unit-head p, .unit-head small { margin: 0; color: var(--muted); }
 .unit-head small .stars { font-size: 16px; }
+/* Unit chia phần (lớp lớn) */
+.modal.wide { max-width: 720px; }
+.part-list { display: flex; flex-direction: column; gap: 12px; }
+.part-row { background: var(--bg); border-radius: 24px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.part-row.done { background: #FFF8DF; }
+.pr-head { display: flex; align-items: center; gap: 10px; }
+.pr-head b { font-family: var(--font-head); font-size: 22px; }
+.pr-head small { color: var(--muted); flex: 1; display: inline-flex; align-items: center; gap: 6px; }
+.pr-head small .stars { font-size: 16px; }
+.pr-actions { display: flex; gap: 8px; align-items: center; }
+.btn.sm { min-height: 44px; font-size: 16px; padding: 0 16px; }
+.round-btn.sm { width: 44px; height: 44px; background: linear-gradient(145deg, #FF7DBB, var(--pink)); color: #fff; }
+.round-btn.sm .ic { width: 22px; height: 22px; }
+.part-row .mini-words { grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); }
+.mini-word { font-size: 15px; text-align: center; line-height: 1.2; }
+.mw-pos { display: inline-grid; place-items: center; min-width: 44px; height: 44px; padding: 0 8px; border-radius: 14px; background: #fff; color: var(--primary); font-style: normal; font-family: var(--font-head); font-size: 20px; box-shadow: var(--shadow-sm); }
+.mw-vi { font-size: 12px; color: var(--ink-2); font-weight: 700; }
+.letter-ball.emoji { font-size: 40px; background: #fff !important; box-shadow: var(--shadow-sm); }
+.part-prog { display: block; font-style: normal; font-size: 12px; color: var(--primary); font-weight: 800; }
+.su-parts { font-size: 13px !important; color: var(--primary) !important; }
+.coin-face.num { font-size: 46px; }
+.pos { display: inline-block; vertical-align: middle; margin-left: 10px; font-family: var(--font); font-size: 16px; font-weight: 800; color: var(--primary); background: var(--lilac); border-radius: 10px; padding: 2px 10px; letter-spacing: 0; line-height: 1.4; }
+.q-vi { font-family: var(--font-head); font-size: 30px; text-align: center; color: var(--ink); line-height: 1.25; padding: 10px 0; }
+.flash.no-pic .flash-pic { font-size: 90px; opacity: .35; filter: grayscale(.2); }
+.flash.no-pic .sound-btn { top: 18px; bottom: auto; }
+.flash-word { overflow-wrap: anywhere; text-align: center; }
+
 .mini-words { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
 .mini-word { background: var(--lilac); border-radius: 20px; padding: 12px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-weight: 800; }
 .mini-word span { font-size: 40px; line-height: 1.1; }
