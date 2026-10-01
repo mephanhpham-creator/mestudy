@@ -650,7 +650,7 @@
   function renderLearnCard() {
     const w = L.words[L.idx];
     // Chỉ hiện câu ví dụ có chứa đúng từ đang học (tối đa 2 câu)
-    const examples = [...(L.u.patterns || []), ...(L.u.sentences || [])].filter((s) => wordRe(w.en).test(s)).slice(0, 2);
+    const examples = [...(L.u.patterns || []), ...(L.u.sentences || [])].filter((s, i, a) => a.indexOf(s) === i && wordRe(w.en).test(s)).slice(0, 2);
     lessonShell({
       title: L.u.parts.length > 1 ? `${uname(L.u)} · Phần ${L.part + 1}` : `${uname(L.u)} · Từ mới`, seg: [L.idx + 1, L.words.length], cls: 'learn',
       body: `
