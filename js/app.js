@@ -212,10 +212,19 @@
     if (word && word.audio) return playFile(word.audio, rate, () => ttsSpeak(word.en, rate));
     ttsSpeak(typeof word === 'string' ? word : word.en, rate);
   }
+  // Tên riêng tiếng Việt trong sách: viết lại theo cách đọc gần giọng Việt cho giọng máy tiếng Anh
+  const VI_NAMES = new Set(['mai', 'nam', 'linh', 'minh', 'hoa', 'ba', 'long', 'ly', 'phong', 'quan', 'trung', 'hung', 'lan', 'hai', 'an', 'vy']);
+  const NAME_SAY = { mai: 'My', nam: 'Nahm', linh: 'Ling', minh: 'Ming', hoa: 'Hwah', ba: 'Bah', long: 'Lawm', ly: 'Lee', phong: 'Fom', quan: 'Kwan', trung: 'Choom', hung: 'Hoong', lan: 'Lahn', hai: 'High', vy: 'Vee' };
+  function ttsText(text) {
+    const t = text.trim();
+    if (/^I\.?$/.test(t)) return 'eye';                       // chữ "I" đứng một mình: đọc là /aɪ/, không đọc kiểu số La Mã
+    // chỉ đổi tên khi viết hoa (Mai, Nam…), không đổi từ thường (long, an…)
+    return t.replace(/\b(Mai|Nam|Linh|Minh|Hoa|Ba|Long|Ly|Phong|Quan|Trung|Hung|Lan|Hai|Vy)\b/g, (m) => NAME_SAY[m.toLowerCase()] || m);
+  }
   function ttsSpeak(text, rate = 0.8) {
     if (!('speechSynthesis' in window)) return;
     stopSpeaking();
-    const u = new SpeechSynthesisUtterance(text);
+    const u = new SpeechSynthesisUtterance(ttsText(text));
     u.lang = 'en-US'; u.rate = rate; if (voice) u.voice = voice;
     speechSynthesis.speak(u);
   }
@@ -902,21 +911,23 @@
   const FILLERS = new Set(['a', 'an', 'the', 'and', 'is', 'are', 'to', 'at', 'of', 'in', 'on', 'my', 'your']);
   // Mỗi từ trong câu mẫu được so với từ giống nhất bé đã nói; lấy kết quả tốt nhất trong các phương án máy nghe được.
   // Đạt khi mọi từ chính đều đúng và điểm trung bình (từ chính hệ số 2) ≥ PASS.
+  // Tên riêng tiếng Việt: máy nhận giọng tiếng Anh không nghe đúng được (Mai → "may"), nên không chấm và luôn tính đúng
+  const isName = (t) => VI_NAMES.has(t);
   function scoreSpeech(targetTokens, alts) {
-    const weights = targetTokens.map((t) => FILLERS.has(t) && targetTokens.length > 1 ? 1 : 2);
-    const total = weights.reduce((a, b) => a + b, 0);
+    const weights = targetTokens.map((t) => isName(t) ? 0 : FILLERS.has(t) && targetTokens.length > 1 ? 1 : 2);
+    const total = weights.reduce((a, b) => a + b, 0) || 1;
     let best = { score: 0, pass: false, marks: targetTokens.map(() => false), heard: alts[0] || '' };
     alts.forEach((alt) => {
       const ht = heardTokens(alt);
       if (!ht.length) return;
-      let sims = targetTokens.map((t) => Math.max(...ht.map((h) => tokenSim(t, h))));
+      let sims = targetTokens.map((t) => isName(t) ? 1 : Math.max(...ht.map((h) => tokenSim(t, h))));
       if (targetTokens.length === 2) { // "teddy bear" có thể bị nghe thành "teddybear"
         const joined = Math.max(...ht.map((h) => tokenSim(targetTokens.join(''), h)));
         sims = sims.map((s) => Math.max(s, joined));
       }
       const score = sims.reduce((a, s, i) => a + s * weights[i], 0) / total;
       const marks = sims.map((s) => s >= PASS);
-      const pass = score >= PASS && marks.every((ok, i) => ok || weights[i] === 1);
+      const pass = score >= PASS && marks.every((ok, i) => ok || weights[i] < 2);
       if (pass > best.pass || (pass === best.pass && score > best.score)) best = { score, pass, marks, heard: alt };
     });
     return best;
