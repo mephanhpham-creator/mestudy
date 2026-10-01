@@ -19,7 +19,11 @@ window.GRADE_DATA[3] = {
         { en: 'eight', pos: 'n', ipa: 'eɪt', vi: 'số tám (8)', emoji: '8️⃣' },
         { en: 'nine', pos: 'n', ipa: 'naɪn', vi: 'số chín (9)', emoji: '9️⃣' },
         { en: 'ten', pos: 'n', ipa: 'ten', vi: 'số mười (10)', emoji: '🔟' },
-      ] },
+      ],
+      // Trang Starter chỉ có câu "Count one to ten."; các câu còn lại lấy nguyên văn từ Unit 2, 11, 14, 16, 17 của sách
+      sentences: ['Count one to ten.', 'I have one bird.', 'No, I don\'t. I have one dog.', 'I have two cats.', 'I have two rabbits.',
+        'There are two windows in my bedroom.', 'They have three cars.', 'Ben and Nam have three buses.',
+        "I'm seven years old.", "I'm eight years old.", "I'm ten years old."] },
     { id: 1, icon: '👋', title: 'Hello', vi: 'Xin chào',
       words: [
         { en: 'hello', pos: 'phr', ipa: 'həˈloʊ', vi: 'xin chào', emoji: '👋' },
@@ -305,5 +309,5 @@ const G3_SENTENCES = {
   19: ["Look! Nam is running.", "Look! Linh is painting.", "She's painting a picture.", "He's singing a song.", "Where's Bill? He's in the park.", "What's he doing? He's skating.", "She's cycling.", "He's flying a kite.", "She's skipping.", "She's playing volleyball.", "Mai is cycling.", "Linh is playing badminton.", "Nam is flying a kite.", "Ben is playing football with Minh.", "He's walking."],
   20: ["Where are you, Mai? I'm at the zoo.", "What can you see? I can see a tiger.", "I can see a horse.", "I can see a monkey.", "I can see a peacock.", "I can see an elephant.", "What's the elephant doing? It's dancing.", "What's the monkey doing? It's swinging.", "What's the peacock doing? It's dancing.", "The parrot is counting.", "The peacock is dancing.", "A monkey is swinging.", "A tiger is climbing a tree.", "Linh and her mother are at the zoo."],
 };
-window.GRADE_DATA[3].units.forEach((u) => { const s = []; Object.keys(G3_SENTENCES).forEach((k) => { if (+k === u.id) s.push(...G3_SENTENCES[k]); }); u.sentences = s.filter((x, i, a) => a.indexOf(x) === i); });
+window.GRADE_DATA[3].units.forEach((u) => { const s = [...(u.sentences || [])]; Object.keys(G3_SENTENCES).forEach((k) => { if (+k === u.id) s.push(...G3_SENTENCES[k]); }); u.sentences = s.filter((x, i, a) => a.indexOf(x) === i); });
 }
