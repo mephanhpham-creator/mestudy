@@ -155,13 +155,21 @@
     return data.units.flatMap((u) => u.words.map((w) => ({ ...w, key: wordKey(g, u, w), unit: u })));
   }
   const learnedCount = (g) => Object.keys(S.words).filter((k) => k.startsWith(`g${g}:`)).length;
-  // Tiến độ một Unit (học từ hoặc luyện đọc): số phần đã xong, sao = sao thấp nhất trong các phần
+  // Mỗi bài (Unit hoặc phần) học qua 3 vòng: 1 Học từ mới · 2 Luyện tập · 3 Ôn tập (trộn từ cũ).
+  // Học đủ 3 vòng mới tính là xong và mở bài tiếp theo. Tiến độ cũ chưa có `level` coi như đã xong.
+  const ROUNDS = 3;
+  const ROUND_NAMES = ['Học từ mới', 'Luyện tập', 'Ôn tập'];
+  const levelOf = (e) => (!e ? 0 : e.level == null ? ROUNDS : e.level);
+  const roundOf = (g, u, p) => Math.min(levelOf(S.units[partKey(g, u, p)]) + 1, ROUNDS);
+  // Tiến độ một Unit (học từ hoặc luyện đọc): số phần đã xong, số vòng đã học, sao = sao thấp nhất trong các phần
   function unitProgress(g, u, bucket = S.units) {
     const st = u.parts.map((_, p) => bucket[partKey(g, u, p)]);
-    const doneParts = st.filter(Boolean).length;
-    return { doneParts, total: u.parts.length, done: doneParts === u.parts.length, stars: doneParts === u.parts.length ? Math.min(...st.map((x) => x.stars)) : 0 };
+    const lv = st.map(levelOf);
+    const doneParts = lv.filter((x) => x >= ROUNDS).length;
+    const done = doneParts === u.parts.length;
+    return { doneParts, total: u.parts.length, done, rounds: lv.reduce((a, x) => a + Math.min(x, ROUNDS), 0), totalRounds: u.parts.length * ROUNDS, stars: done ? Math.min(...st.map((x) => x.stars)) : 0 };
   }
-  const nextPartOf = (g, u, bucket = S.units) => Math.max(0, u.parts.findIndex((_, p) => !bucket[partKey(g, u, p)]));
+  const nextPartOf = (g, u, bucket = S.units) => Math.max(0, u.parts.findIndex((_, p) => levelOf(bucket[partKey(g, u, p)]) < ROUNDS));
   // Trạng thái từng Unit: đã xong / đang học / khóa
   function unitStates(g, data) {
     let prevDone = true;
@@ -169,7 +177,7 @@
       const pr = unitProgress(g, u);
       const locked = !S.profile.unlockAll && !prevDone;
       prevDone = pr.done;
-      return { u, stars: pr.stars, done: pr.done, doneParts: pr.doneParts, total: pr.total, locked, next: false };
+      return { u, stars: pr.stars, done: pr.done, doneParts: pr.doneParts, total: pr.total, rounds: pr.rounds, totalRounds: pr.totalRounds, locked, next: false };
     }).map((x, i, arr) => ({ ...x, next: !x.locked && !x.done && arr.findIndex((y) => !y.locked && !y.done) === i }));
   }
   // Nhận ra từ trong câu, kể cả dạng -s/-es/-d/-ed/-ing (provide → provided, perform → performing)
@@ -462,7 +470,7 @@
           ${next ? `
           <h2 class="sec-title">Học tiếp</h2>
           <button class="continue-card" id="btn-continue">
-            <span class="cc-text"><b>${uname(next)} – ${esc(next.title)}</b><small>${esc(next.vi)}${next.parts.length > 1 ? ` · Phần ${nextPartOf(g, next) + 1}/${next.parts.length}` : ''}</small></span>
+            <span class="cc-text"><b>${uname(next)} – ${esc(next.title)}</b><small>${esc(next.vi)}${next.parts.length > 1 ? ` · Phần ${nextPartOf(g, next) + 1}/${next.parts.length}` : ''} · Vòng ${roundOf(g, next, nextPartOf(g, next))}: ${ROUND_NAMES[roundOf(g, next, nextPartOf(g, next)) - 1]}</small></span>
             <span class="cc-pics">${[...next.parts[nextPartOf(g, next)].filter((w) => !w.noPic), { emoji: next.icon || '📘' }].slice(0, 4).map((w) => `<span>${pic(w)}</span>`).join('')}</span>
             <span class="cc-play">${ICON.play}</span>
           </button>` : ''}
@@ -514,7 +522,7 @@
                 <span class="island"></span>
               </button>
               ${s.next ? `<div class="coin-chip">${mascotSVG('happy', 92)}<div class="say">Học tiếp nào!</div></div>` : ''}
-              <button class="unit-pill ${s.next ? 'wide' : ''}" data-unit="${i}"><span><b>${uname(s.u)}</b>${s.next || window.innerWidth >= 768 ? `<small>${esc(s.u.title)}</small>` : ''}${s.total > 1 && !s.locked ? `<em class="part-prog">${s.doneParts}/${s.total} phần</em>` : ''}</span>${ICON.chev}</button>
+              <button class="unit-pill ${s.next ? 'wide' : ''}" data-unit="${i}"><span><b>${uname(s.u)}</b>${s.next || window.innerWidth >= 768 ? `<small>${esc(s.u.title)}</small>` : ''}${!s.locked && !s.done && s.rounds ? `<em class="part-prog">${s.total > 1 ? `${s.doneParts}/${s.total} phần · ` : ''}${s.rounds}/${s.totalRounds} vòng</em>` : ''}</span>${ICON.chev}</button>
             </div>`).join('')}
         </div>
       </section>`);
@@ -537,24 +545,29 @@
     const pr = unitProgress(g, u);
     const multi = u.parts.length > 1;
     // Unit nhiều từ: mỗi phần là một bài học riêng (học từ mới + luyện đọc)
+    // 3 chấm vòng học của một phần + nút học vòng tiếp theo
+    const roundDots = (p) => { const lv = levelOf(S.units[partKey(g, u, p)]); return `<span class="round-dots" title="${lv}/${ROUNDS} vòng">${ROUND_NAMES.map((nm, i) => `<i class="${i < lv ? 'on' : ''}" title="${nm}"></i>`).join('')}</span>`; };
+    const learnLabel = (p) => { const lv = levelOf(S.units[partKey(g, u, p)]); return lv >= ROUNDS ? 'Ôn lại' : `Vòng ${lv + 1}: ${ROUND_NAMES[lv]}`; };
     const partsHtml = multi ? `<div class="part-list">${u.parts.map((ws, p) => {
-      const st = S.units[partKey(g, u, p)], sp = S.speak[partKey(g, u, p)];
+      const st = S.units[partKey(g, u, p)];
+      const lv = levelOf(st);
       return `
-        <div class="part-row ${st ? 'done' : ''}">
-          <div class="pr-head"><b>Phần ${p + 1}</b><small>${ws.length} từ${st ? ' · ' + starsHtml(st.stars) : ''}</small>
+        <div class="part-row ${lv >= ROUNDS ? 'done' : ''}">
+          <div class="pr-head"><b>Phần ${p + 1}</b><small>${ws.length} từ ${roundDots(p)}${lv >= ROUNDS ? ' ' + starsHtml(st.stars) : ''}</small>
             <span class="pr-actions"><button class="round-btn sm" data-speak="${p}" aria-label="Luyện đọc phần ${p + 1}">${ICON.mic}</button>
-            <button class="btn btn-primary sm" data-learn="${p}">${st ? 'Học lại' : 'Học'} ${ICON.chev}</button></span></div>
+            <button class="btn btn-primary sm" data-learn="${p}">${learnLabel(p)} ${ICON.chev}</button></span></div>
           <div class="mini-words">${ws.map(miniWord).join('')}</div>
         </div>`;
     }).join('')}</div>` : `<div class="mini-words">${u.words.map(miniWord).join('')}</div>`;
     modal(`
       <div class="unit-head"><button class="letter-ball t-${tone} has-sound ${u.letter ? '' : 'emoji'}" id="letter-sound" aria-label="Nghe">${u.letter || u.icon || u.badge}<i>${ICON.sound}</i></button>
-        <div><small>${uname(u)}${pr.done ? ` · ${starsHtml(pr.stars)}` : multi ? ` · ${pr.doneParts}/${pr.total} phần` : ''}</small><h3>${esc(u.title)}</h3><p>${esc(u.vi)} · ${u.words.length} từ</p></div></div>
+        <div><small>${uname(u)}${pr.done ? ` · ${starsHtml(pr.stars)}` : ` · ${multi ? `${pr.doneParts}/${pr.total} phần · ` : ''}${pr.rounds}/${pr.totalRounds} vòng`}</small><h3>${esc(u.title)}</h3><p>${esc(u.vi)} · ${u.words.length} từ</p></div></div>
       ${partsHtml}
       ${u.patterns ? `<div class="sentences"><small>Mẫu câu của bài</small>${u.patterns.map((s) => `<button class="sentence" data-s="${esc(s)}"><i>${ICON.sound}</i>${esc(s)}</button>`).join('')}</div>` : ''}
-      ${multi ? '' : `<div class="row-actions">
+      ${multi ? '' : `<div class="round-line">${roundDots(0)}<small>${levelOf(S.units[partKey(g, u, 0)]) >= ROUNDS ? 'Đã học đủ 3 vòng' : 'Học đủ 3 vòng để mở bài tiếp theo'}</small></div>
+      <div class="row-actions">
         <button class="btn btn-ghost" data-speak="0">${ICON.mic} Luyện đọc</button>
-        <button class="btn btn-primary" data-learn="0">Học từ mới ${ICON.chev}</button>
+        <button class="btn btn-primary" data-learn="0">${learnLabel(0)} ${ICON.chev}</button>
       </div>`}`, {
       cls: multi ? 'wide' : '',
       onMount: (m, close) => {
@@ -582,21 +595,45 @@
     const others = [...near, ...rest].filter((x, i, a) => a.findIndex((y) => y.en.toLowerCase() === x.en.toLowerCase()) === i);
     return { type, word: w, options: shuffle([w, ...others.slice(0, 3)]) };
   }
-  function buildQuiz(words, pool) {
+  // per: số câu mỗi từ; hard: ưu tiên dạng khó (xếp chữ, nghe chọn từ, nghĩa → từ)
+  function buildQuiz(words, pool, { per = 2, hard = false } = {}) {
     const qs = [];
     words.forEach((w) => {
-      const types = w.noPic ? ['meaning', 'vi2en', 'hear'] : ['listen', 'pic', 'meaning', 'vi2en'];
-      if (/^[a-z]{2,9}$/.test(w.en)) types.push('spell');
-      shuffle(types).slice(0, 2).forEach((t) => qs.push(makeQuestion(t, w, pool)));
+      const canSpell = /^[a-z]{2,9}$/.test(w.en);
+      let types;
+      if (hard) types = [...(canSpell ? ['spell'] : []), 'hear', 'vi2en', ...(w.noPic ? ['meaning'] : ['listen'])];
+      else {
+        types = shuffle(w.noPic ? ['meaning', 'vi2en', 'hear'] : ['listen', 'pic', 'meaning', 'vi2en']);
+        if (canSpell) types.push('spell');
+        types = shuffle(types);
+      }
+      types.slice(0, per).forEach((t) => qs.push(makeQuestion(t, w, pool)));
     });
     return shuffle(qs);
   }
+  // Từ cũ để ôn: từ của các bài trước (Unit trước / phần trước), ưu tiên từ hay sai và lâu chưa ôn
+  function oldWordsFor(g, data, u, part, n) {
+    const ui = data.units.indexOf(u);
+    const before = allWords(g, data).filter((w) => {
+      const wi = data.units.indexOf(w.unit);
+      if (wi < ui) return true;
+      if (wi > ui) return false;
+      return u.parts.findIndex((ws) => ws.some((x) => x.en === w.en)) < part;
+    });
+    const score = (w) => { const s = S.words[w.key]; return s ? s.w * 2 - s.c * 0.5 + 1 : 0; };
+    return shuffle(before).sort((a, b) => score(b) - score(a)).slice(0, n);
+  }
 
-  function startLesson(g, data, u, part = nextPartOf(g, u)) {
+  // Vòng 1: thẻ từ + bài tập (kèm 2 câu ôn từ cũ) · Vòng 2: chỉ bài tập, dạng khó hơn · Vòng 3: ôn trộn từ cũ
+  function startLesson(g, data, u, part = nextPartOf(g, u), round = roundOf(g, u, part)) {
     const pool = allWords(g, data);
     const inPart = u.parts[part] || u.words;
     const words = pool.filter((w) => w.unit === u && inPart.includes(u.words.find((x) => x.en === w.en)));
-    L = { kind: 'unit', g, data, u, part, words, phase: 'learn', idx: 0, queue: buildQuiz(words, pool), done: 0, mistakes: 0 };
+    let queue;
+    if (round === 1) queue = [...buildQuiz(words, pool), ...buildQuiz(oldWordsFor(g, data, u, part, 2), pool, { per: 1 })];
+    else if (round === 2) queue = buildQuiz(words, pool, { per: 3, hard: true });
+    else queue = [...buildQuiz(words, pool, { per: 1, hard: true }), ...buildQuiz(oldWordsFor(g, data, u, part, Math.max(4, Math.ceil(words.length * 0.8))), pool, { per: 1 })];
+    L = { kind: 'unit', g, data, u, part, round, words, phase: round === 1 ? 'learn' : 'quiz', idx: 0, queue: shuffle(queue), done: 0, mistakes: 0 };
     L.total = L.queue.length;
     view = 'lesson'; render();
   }
@@ -725,7 +762,7 @@
         <div class="coach center">${mascotSVG('think', 130)}</div>`;
     }
     lessonShell({
-      title: L.kind === 'review' ? 'Ôn tập' : 'Luyện tập', cls: `quiz q-${q.type}`,
+      title: L.kind === 'review' ? 'Ôn tập' : `Vòng ${L.round || 1}: ${ROUND_NAMES[(L.round || 1) - 1]}`, cls: `quiz q-${q.type}`,
       pills: `<span class="pill-chip">Câu ${Math.min(L.done + 1, L.total)}/${L.total}</span><span class="pill-chip">⭐ ${L.done} đúng</span>`,
       body,
     });
@@ -801,7 +838,9 @@
     if (L.kind === 'unit' || L.kind === 'speak') {
       const bucket = L.kind === 'unit' ? S.units : S.speak;
       const k = partKey(L.g, L.u, L.part || 0);
-      bucket[k] = { stars: Math.max(stars, (bucket[k] || {}).stars || 0) };
+      const prev = bucket[k] || {};
+      bucket[k] = { stars: Math.max(stars, prev.stars || 0) };
+      if (L.kind === 'unit') bucket[k].level = Math.max(L.round || ROUNDS, prev.stars ? levelOf(prev) : 0);
     }
     const hadGoal = lessonsToday() >= goalInfo().lessons;
     L.result = { xp, stars, extended: recordXP(xp), goalReached: !hadGoal && lessonsToday() >= goalInfo().lessons };
@@ -811,23 +850,36 @@
     const r = L.result;
     const n = currentStreak();
     const partTxt = L.u && L.u.parts.length > 1 ? ` – Phần ${L.part + 1}` : '';
-    const title = L.kind === 'unit' ? `Hoàn thành ${uname(L.u)}${partTxt}!` : L.kind === 'speak' ? `Luyện đọc ${uname(L.u)}${partTxt} xong!` : 'Ôn tập xong rồi!';
+    const lv = L.kind === 'unit' ? levelOf(S.units[partKey(L.g, L.u, L.part || 0)]) : 0;
+    const unitDone = L.kind === 'unit' && lv >= ROUNDS;
+    const title = L.kind === 'unit'
+      ? (unitDone ? `Hoàn thành ${uname(L.u)}${partTxt}!` : `Xong vòng ${L.round}: ${ROUND_NAMES[L.round - 1]}!`)
+      : L.kind === 'speak' ? `Luyện đọc ${uname(L.u)}${partTxt} xong!` : 'Ôn tập xong rồi!';
+    const roundsHtml = L.kind === 'unit' ? `<div class="round-track">${ROUND_NAMES.map((nm, i) => `
+      <span class="rt-step ${i < lv ? 'on' : ''} ${i === L.round - 1 ? 'now' : ''}"><i>${i < lv ? ICON.check : i + 1}</i><small>${nm}</small></span>`).join('')}</div>
+      ${unitDone ? '' : `<p class="res-note">Còn ${ROUNDS - lv} vòng nữa để hoàn thành ${uname(L.u)}${partTxt} 💪</p>`}` : '';
     app.innerHTML = `
       <section class="screen result">
         <div class="res-mascot"><span class="burst"></span>${mascotSVG(r.extended || r.stars === 3 ? 'fire' : 'cheer', 230)}</div>
         <h1><span class="spark">✦</span>${title}<span class="spark">✦</span></h1>
+        ${roundsHtml}
         ${L.kind === 'speak' ? `<p class="res-note">Đọc chuẩn ${L.items.length - L.mistakes}/${L.items.length} lượt 🎤</p>` : ''}
         ${L.kind !== 'review' ? `<div class="res-stars">${[0, 1, 2].map((i) => `<i class="${i < r.stars ? 'on' : ''}" style="animation-delay:${0.2 + i * 0.25}s">★</i>`).join('')}</div>` : ''}
         <div class="xp-pill">+${r.xp} XP</div>
         ${r.extended ? `<div class="res-card fire"><span class="rc-emoji">🔥</span><div><b>${n} ngày liên tiếp!</b><p>${n === 1 ? 'Chuỗi mới bắt đầu rồi. Mai quay lại nhé!' : 'Chuỗi của bạn tăng lên rồi!'}</p></div></div>` : ''}
         ${r.goalReached ? '<div class="res-card goal"><span class="rc-emoji">🎯</span><div><b>Đạt mục tiêu hôm nay!</b></div></div>' : ''}
         <button class="btn btn-primary btn-block btn-lg" id="home">Về trang chủ</button>
-        ${L.kind === 'unit' ? '<button class="btn-link" id="more">Học tiếp</button>' : ''}
+        ${L.kind === 'unit' ? `<button class="btn-link" id="more">${unitDone ? 'Học bài tiếp theo' : `Học tiếp vòng ${lv + 1}: ${ROUND_NAMES[lv]}`}</button>` : ''}
       </section>`;
     sfx.win(); confetti();
     $('#home').onclick = () => leaveLesson('home');
     const more = $('#more');
-    if (more) more.onclick = () => { const { g, data } = L; const nx = nextUnitOf(g, data); L = null; startLesson(g, data, nx); };
+    if (more) more.onclick = () => {
+      const { g, data, u, part } = L;
+      L = null;
+      if (!unitDone) return startLesson(g, data, u, part || 0);   // vòng tiếp theo của cùng bài
+      startLesson(g, data, nextUnitOf(g, data));
+    };
   }
 
   // ---------- Chuỗi ngày học & phần thưởng ----------
